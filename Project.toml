@@ -1,0 +1,20 @@
+name = "GraphHelpers"
+uuid = "7e3157f9-11f3-423c-ab81-312edf651e8f"
+authors = ["anand jain <anandj@uchicago.edu>"]
+version = "0.1.0"
+
+[deps]
+AbstractTrees = "1520ce14-60c1-5f80-bbc7-55ef81b5835c"
+Boolin = "35dd214e-c2db-4c8c-90c4-e4aaf3ce35bf"
+Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
+Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
+
+[compat]
+Graphs = "1"
+julia = "1.6"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
