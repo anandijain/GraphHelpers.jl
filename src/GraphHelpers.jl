@@ -10,9 +10,10 @@ for f in [cartesian_product, tensor_product]
 end
 
 include("gen.jl")
+include("utils.jl")
 # include("viz.jl")
 
-export all_graphs, all_labeled_graphs, all_balanced_graphs
+export all_graphs, all_labeled_graphs, all_unicyclic_graphs
 export push_graph!, unique_graphs
 # export grid_plot, array_plot
 

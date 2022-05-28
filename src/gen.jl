@@ -1,16 +1,5 @@
-"graph_from_bits(Bool.((0, 1, 0, 1)))"
-graph_from_bits(b) = graph_from_bitstring!(SimpleGraph(length(b)), b)
-graph_from_bits(b, el) = graph_from_bitstring!(SimpleGraph(length(b)), b, el)
-graph_from_bitstring!(g, b) = graph_from_bitstring!(g, b, collect(combinations(1:nv(g), 2)))
 
-
-function graph_from_bitstring!(g, b, c)
-    for (idx, v) in enumerate(b)
-        v && add_edge!(g, c[idx]...)
-    end
-    g
-end
-
+"https://oeis.org/A006125"
 function all_labeled_graphs(n)
     e = binomial(n, 2)
     V = Vector{SimpleGraph}(undef, 2^e)
@@ -23,29 +12,57 @@ function all_labeled_graphs(n)
     V
 end
 
+n_labeled_graphs(n) = 2^(binomial(n, 2))
+
+"https://oeis.org/A000088"
 function all_graphs(n)
     S = Set{SimpleGraph}()
     e = binomial(n, 2)
     b = bool_itr(e)
-    # el = collect(combinations(1:n, 2))
+    el = collect(combinations(1:n, 2))
     for x in b
         g = SimpleGraph(n)
         # for (idx, v) in enumerate(reverse(x))
         #     v && add_edge!(g, el[idx]...)
         # end
-        graph_from_bitstring!(g, x, b)
+        graph_from_bitstring!(g, x, el)
         push_graph!(S, g)
     end
     S
 end
 
-"all graphs where ne(g) == nv(g). i don't know if balanced is the literature term for this property"
-function all_balanced_graphs(n)
-    S = Set{SimpleGraph}()
-    all_balanced_graphs!(S, n)
+# S = Vector{SimpleGraph}()
+# all_unicyclic_graphs!(S, n; f=push!) # less code duplication but prob slower
+# all_unicyclic_graphs!(S, n; f=(i,g)->setindex!(V, g, i))
+function all_unicyclic_labeled_graphs(n)
+    S = Vector{SimpleGraph}(undef, binomial(binomial(n, 2), n))
+    all_unicyclic_labeled_graphs!(S, n)
 end
 
-function all_balanced_graphs!(S, n)
+function all_unicyclic_labeled_graphs!(S, n)
+    possible_gs = combinations(1:binomial(n, 2), n)
+    e_labels = collect(combinations(1:n, 2))
+    for (i, p) in enumerate(possible_gs)
+        g = SimpleGraph(n)
+        for ev in e_labels[p]
+            add_edge!(g, ev...)
+        end
+        S[i] = g
+    end
+    S
+end
+
+"
+all graphs where ne(g) == nv(g)
+    
+https://oeis.org/A001434
+"
+function all_unicyclic_graphs(n)
+    S = Set{SimpleGraph}()
+    all_unicyclic_graphs!(S, n)
+end
+
+function all_unicyclic_graphs!(S, n)
     possible_gs = combinations(1:binomial(n, 2), n)
     e_labels = collect(combinations(1:n, 2))
     for p in possible_gs
@@ -58,19 +75,9 @@ function all_balanced_graphs!(S, n)
     S
 end
 
-function push_graph!(set::AbstractSet, g::AbstractGraph)
-    for e in set
-        if Graphs.Experimental.has_isomorph(g, e)
-            return set
-        end
-    end
-    push!(set, g)
-end
 
-function unique_graphs(gs)
-    S = Set{AbstractGraph}()
-    for g in gs
-        push_graph!(S, g)
-    end
-    S
-end
+"
+n-node connected unicyclic graphs
+https://oeis.org/A001429
+"
+all_connected_unicyclic(n) = Iterators.filter(is_connected, all_unicyclic_graphs(n))
