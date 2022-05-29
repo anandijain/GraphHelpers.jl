@@ -1,33 +1,55 @@
-"https://oeis.org/A006125"
-function all_labeled_graphs(n)
-    _ne = binomial(n, 2)
-    V = collect(SimpleGraph(n) for _ in 1:(2^_ne))
-    pes = collect(possible_edges(V[1]))
-    eis = powerset(1:_ne)
+"
+enumeration of graphs
+
+requires the functions:
+ `T(n)`, `possible_edges(g::T)`, `add_edge!(g::T, e::Tuple)` and 
+ `Graphs.Experimental.has_isomorph(g1::T, g2::T)`
+ "
+function all_graphs(T, n)
+    S = Set{T}()
+    g = T(n) # would rather add another method to `possible_edges`
+    pes = collect(possible_edges(g))
+    eis = powerset(pes)
+    for es in eis
+        g = T(n)
+        for e in es
+            add_edge!(g, Tuple(e))
+        end
+        push_graph!(S, g)
+    end
+    S
+end
+"""
+
+enumeration of labeled graphs
+
+requires the functions:
+ `T(n)`, `possible_edges(g::T)`, `add_edge!(g::T, e::Tuple)` 
+"""
+function all_labeled_graphs(T, n)
+    g = T(n) # would rather add another method to `possible_edges`
+    # would be nice to avoid collecting
+    pes = collect(possible_edges(g))
+    eis = collect(powerset(pes))
+    V = collect(T(n) for _ in 1:length(eis))
     for (i, es) in enumerate(eis)
         for e in es
-            add_edge!(V[i], pes[e])
+            add_edge!(V[i], Tuple(e))
         end
     end
     V
+end
+
+"https://oeis.org/A006125"
+function all_labeled_graphs(n)
+    all_labeled_graphs(SimpleGraph, n)
 end
 
 n_labeled_graphs(n) = 2^(binomial(n, 2))
 
 "https://oeis.org/A000088"
 function all_graphs(n)
-    S = Set{SimpleGraph}()
-    _ne = binomial(n, 2)
-    pes = collect(Iterators.map(x -> Edge(Tuple(x)), combinations(1:n, 2)))
-    eis = powerset(1:_ne)
-    for es in eis
-        g = SimpleGraph(n)
-        for e in es
-            add_edge!(g, pes[e])
-        end
-        push_graph!(S, g)
-    end
-    S
+    all_graphs(SimpleGraph, n)
 end
 
 # S = Vector{SimpleGraph}()

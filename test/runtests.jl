@@ -2,7 +2,6 @@ using GraphHelpers, Graphs, Test
 gs = all_labeled_graphs.(1:5)
 @test length.(gs) == GraphHelpers.n_labeled_graphs.(1:5)
 
-g5 = gs[end]
 ug = unique_graphs.(gs)
 ag = all_graphs.(1:5)
 @test all(map(x -> GraphHelpers.is_set_isomorphic(x), zip(ug, ag)))
