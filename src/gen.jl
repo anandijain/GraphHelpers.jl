@@ -1,13 +1,13 @@
-
 "https://oeis.org/A006125"
 function all_labeled_graphs(n)
-    e = binomial(n, 2)
-    V = Vector{SimpleGraph}(undef, 2^e)
-    b = bool_itr(e)
-    el = collect(combinations(1:n, 2))
-    for (i, x) in enumerate(b)
-        g = SimpleGraph(n)
-        V[i] = graph_from_bitstring!(g, x, el)
+    _ne = binomial(n, 2)
+    V = collect(SimpleGraph(n) for _ in 1:(2^_ne))
+    pes = collect(possible_edges(V[1]))
+    eis = powerset(1:_ne)
+    for (i, es) in enumerate(eis)
+        for e in es
+            add_edge!(V[i], pes[e])
+        end
     end
     V
 end
@@ -17,15 +17,14 @@ n_labeled_graphs(n) = 2^(binomial(n, 2))
 "https://oeis.org/A000088"
 function all_graphs(n)
     S = Set{SimpleGraph}()
-    e = binomial(n, 2)
-    b = bool_itr(e)
-    el = collect(combinations(1:n, 2))
-    for x in b
+    _ne = binomial(n, 2)
+    pes = collect(Iterators.map(x -> Edge(Tuple(x)), combinations(1:n, 2)))
+    eis = powerset(1:_ne)
+    for es in eis
         g = SimpleGraph(n)
-        # for (idx, v) in enumerate(reverse(x))
-        #     v && add_edge!(g, el[idx]...)
-        # end
-        graph_from_bitstring!(g, x, el)
+        for e in es
+            add_edge!(g, pes[e])
+        end
         push_graph!(S, g)
     end
     S

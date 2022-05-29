@@ -13,17 +13,6 @@ t = @. sort(collect(values(cu)))
 
 using GraphMakie, WGLMakie, NetworkLayout, Boolin
 
-function remove_arr_vars(f)
-    vars = boolean_variables(f)
-    if any(x -> istree(x) && operation(x) == getindex, vars)
-        new_var_symbols = map(x -> Symbol(arguments(Symbolics.value(x))...), vars)
-        no_getindex_vars = map(x -> only(@variables($x)), new_var_symbols)
-        sub_dict = Dict(vars .=> no_getindex_vars)
-        f = substitute(f, sub_dict)
-    end
-    f
-end
-
 f = boolean_function(256, 3)
 expr = Symbolics.toexpr(f)
 

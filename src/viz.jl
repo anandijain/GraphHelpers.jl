@@ -110,3 +110,15 @@ function expr_tree_plot(expr; show_call=false)
     fig
 end
 
+# code to plot the graph all the time, sometimes nice
+# function Graphs.show(io::IO, g::Graphs.SimpleGraph{Int64})
+#     display(graphplot(g))
+#     dir = is_directed(g) ? "directed" : "undirected"
+#     print(io, "{$(nv(g)), $(ne(g))} $dir simple Int64 graph")
+# end
+
+# function Graphs.show(io::IO, g::Graphs.SimpleDiGraph{Int64})
+#     display(graphplot(g); arrowsize=20)
+#     dir = is_directed(g) ? "directed" : "undirected"
+#     print(io, "{$(nv(g)), $(ne(g))} $dir simple Int64 graph")
+# end

@@ -11,5 +11,13 @@ ag = all_graphs.(1:5)
 cgs = map(xs -> unique_graphs(filter(is_connected, xs)), gs)
 @test length.(cgs) == [1, 1, 2, 6, 21] # OEIS A001349
 
+g = SimpleGraph(3)
+@test !is_complete(g) && is_complete(complete!(g))
+@test ne(g) == 3
+
+g = SimpleDiGraph(3)
+@test !is_complete(g) && is_complete(complete!(g))
+@test ne(g) == 6
+
 # disabling to not add a bunch of deps
 # @testset "fun" begin include("fun.jl") end

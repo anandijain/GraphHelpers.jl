@@ -22,8 +22,6 @@ determine if the graphs contain the same
 is_set_isomorphic(a, b) = length(unique_graphs(union(a, b))) == length(a) == length(b)
 is_set_isomorphic(xs) = foldl(is_set_isomorphic, xs)
 
-possible_edges(g) = combinations(1:nv(g), 2)
-
 "
 tbh idk what this does
 graph_from_bits(Bool.((0, 1, 0, 1)))
@@ -42,3 +40,19 @@ end
 "we remove the cycles of length two since converting SimpleGraph to SimpleDiGraph does `add_edge(g, a, b)` and `add_edge(g, b, a)`"
 cycles(g::SimpleGraph) = Iterators.filter(x -> length(x) > 2, simplecycles_iter(SimpleDiGraph(g)))
 self_loops(g) = Iterators.filter(e -> e.src == e.dst, edges(g))
+
+possible_edges(g::SimpleGraph{T}) where {T} = Iterators.map(x -> edgetype(g)(Tuple(x)), combinations(1:nv(g), 2))
+possible_edges(g::SimpleDiGraph{T}) where {T} = Iterators.map(x -> edgetype(g)(Tuple(x)), permutations(1:nv(g), 2))
+
+function complete!(g)
+    for e in possible_edges(g)
+        # for my implementation of Hypergraph this would create duplicates, since I don't check has_edge before pushing
+        # this means that my Hyperedges can have multiplicities, but is undesirable here
+        add_edge!(g, e)
+    end
+    g
+end
+
+function is_complete(g)
+    isequal(Set(edges(g)), Set(possible_edges(g)))
+end
