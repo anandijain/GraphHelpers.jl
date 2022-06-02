@@ -45,6 +45,7 @@ possible_edges(g::SimpleGraph{T}) where {T} = Iterators.map(x -> edgetype(g)(Tup
 possible_edges(g::SimpleDiGraph{T}) where {T} = Iterators.map(x -> edgetype(g)(Tuple(x)), permutations(1:nv(g), 2))
 
 function complete!(g)
+    is_complete(g) && return g
     for e in possible_edges(g)
         # for my implementation of Hypergraph this would create duplicates, since I don't check has_edge before pushing
         # this means that my Hyperedges can have multiplicities, but is undesirable here
@@ -55,4 +56,18 @@ end
 
 function is_complete(g)
     isequal(Set(edges(g)), Set(possible_edges(g)))
+end
+
+"""
+```julia
+g = SimpleDiGraph(3)
+add_edge!(g, 1, 2)
+add_edge!(g, 1, 3)
+add_edge!(g, 2, 3)
+```
+unless we check the indegree, the above graph would be considered a tree
+
+"""
+function is_tree(g)
+    is_connected(g) && !is_cyclic(g) && all(<=(1), indegree(g))
 end

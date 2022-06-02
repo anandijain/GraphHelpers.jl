@@ -1,7 +1,6 @@
 module GraphHelpers
 using Graphs, Base.Iterators
 using AbstractTrees, Combinatorics
-using Boolin
 # using GraphMakie, WGLMakie
 
 for f in [cartesian_product, tensor_product]

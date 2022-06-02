@@ -18,5 +18,12 @@ g = SimpleDiGraph(3)
 @test !is_complete(g) && is_complete(complete!(g))
 @test ne(g) == 6
 
+g = SimpleDiGraph(3)
+add_edge!(g, 1, 2)
+add_edge!(g, 2, 3)
+@test GraphHelpers.is_tree(g)
+add_edge!(g, 1, 3)
+@test !GraphHelpers.is_tree(g)
+
 # disabling to not add a bunch of deps
 # @testset "fun" begin include("fun.jl") end
