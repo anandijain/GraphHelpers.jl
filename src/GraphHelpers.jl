@@ -15,6 +15,6 @@ include("utils.jl")
 export all_graphs, all_labeled_graphs, all_unicyclic_graphs
 export push_graph!, unique_graphs
 # export grid_plot, array_plot
-export possible_edges, complete!, is_complete
+export possible_edges, complete!, is_complete, is_simple
 
 end # module

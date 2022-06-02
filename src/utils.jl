@@ -71,3 +71,9 @@ unless we check the indegree, the above graph would be considered a tree
 function is_tree(g)
     is_connected(g) && !is_cyclic(g) && all(<=(1), indegree(g))
 end
+
+is_simple(g::Graphs.AbstractSimpleGraph) = true
+
+function is_simple(g)
+    all(==(2), length.(edges(g)))
+end

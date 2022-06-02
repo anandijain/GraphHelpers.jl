@@ -25,5 +25,8 @@ add_edge!(g, 2, 3)
 add_edge!(g, 1, 3)
 @test !GraphHelpers.is_tree(g)
 
+@test is_simple(g)
+@test is_simple(SimpleGraph(g))
+
 # disabling to not add a bunch of deps
 # @testset "fun" begin include("fun.jl") end
