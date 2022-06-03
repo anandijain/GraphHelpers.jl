@@ -40,9 +40,11 @@ end
 "we remove the cycles of length two since converting SimpleGraph to SimpleDiGraph does `add_edge(g, a, b)` and `add_edge(g, b, a)`"
 cycles(g::SimpleGraph) = Iterators.filter(x -> length(x) > 2, simplecycles_iter(SimpleDiGraph(g)))
 self_loops(g) = Iterators.filter(e -> e.src == e.dst, edges(g))
+rem_self_loops!(g) = rem_edges!(g, self_loops(g))
 
 possible_edges(g::SimpleGraph{T}) where {T} = Iterators.map(x -> edgetype(g)(Tuple(x)), combinations(1:nv(g), 2))
 possible_edges(g::SimpleDiGraph{T}) where {T} = Iterators.map(x -> edgetype(g)(Tuple(x)), permutations(1:nv(g), 2))
+Graphs.complete_graph(T, n) = complete!(T(n))
 
 function complete!(g)
     is_complete(g) && return g
@@ -77,3 +79,22 @@ is_simple(g::Graphs.AbstractSimpleGraph) = true
 function is_simple(g)
     all(==(2), length.(edges(g)))
 end
+
+function rem_edges!(g, es)
+    # x = falses(length(es))
+    for (i, e) in enumerate(es)
+        # x[i] = rem_edge!(g, e)
+        rem_edge!(g, e)
+    end
+    # x
+end
+
+function add_edges!(g, es)
+    # x = falses(length(es))
+    for (i, e) in enumerate(es)
+        # x[i] = rem_edge!(g, e)
+        add_edge!(g, e)
+    end
+    # x
+end
+
