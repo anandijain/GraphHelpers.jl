@@ -6,10 +6,12 @@ using AbstractTrees, Combinatorics
 for f in [cartesian_product, tensor_product]
     fname = Symbol(f)
     @eval Graphs.$fname(xs) = foldl($f, xs)
+    @eval Graphs.$fname(xs...) = foldl($f, xs)
 end
 
 include("gen.jl")
 include("utils.jl")
+include("properties.jl")
 # include("viz.jl")
 
 export all_graphs, all_labeled_graphs, all_unicyclic_graphs

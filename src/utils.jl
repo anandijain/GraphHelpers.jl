@@ -1,3 +1,4 @@
+"push_graph! will only add g to set if there is no graph in set isomorphic to g"
 function push_graph!(set::AbstractSet, g::AbstractGraph)
     for e in set
         if Graphs.Experimental.has_isomorph(g, e)
@@ -39,7 +40,10 @@ end
 
 "we remove the cycles of length two since converting SimpleGraph to SimpleDiGraph does `add_edge(g, a, b)` and `add_edge(g, b, a)`"
 cycles(g::SimpleGraph) = Iterators.filter(x -> length(x) > 2, simplecycles_iter(SimpleDiGraph(g)))
-self_loops(g) = Iterators.filter(e -> e.src == e.dst, edges(g))
+
+"this dispatch is funky"
+Base.collect(e::Graphs.SimpleEdge) = only(typeof(e).parameters)[e.src, e.dst]
+self_loops(g) = Iterators.filter(e -> allequal(collect(e)), edges(g))
 rem_self_loops!(g) = rem_edges!(g, self_loops(g))
 
 possible_edges(g::SimpleGraph{T}) where {T} = Iterators.map(x -> edgetype(g)(Tuple(x)), combinations(1:nv(g), 2))
@@ -56,29 +60,6 @@ function complete!(g)
     g
 end
 
-function is_complete(g)
-    isequal(Set(edges(g)), Set(possible_edges(g)))
-end
-
-"""
-```julia
-g = SimpleDiGraph(3)
-add_edge!(g, 1, 2)
-add_edge!(g, 1, 3)
-add_edge!(g, 2, 3)
-```
-unless we check the indegree, the above graph would be considered a tree
-
-"""
-function is_tree(g)
-    is_connected(g) && !is_cyclic(g) && all(<=(1), indegree(g))
-end
-
-is_simple(g::Graphs.AbstractSimpleGraph) = true
-
-function is_simple(g)
-    all(==(2), length.(edges(g)))
-end
 
 function rem_edges!(g, es)
     # x = falses(length(es))
@@ -97,4 +78,3 @@ function add_edges!(g, es)
     end
     # x
 end
-
