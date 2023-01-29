@@ -41,4 +41,4 @@ function is_planar()
 end
 
 "make a cycles that doesn't do 132 and 123"
-Graphs.simplecycles_iter(g::Graphs.SimpleGraph) = Iterators.filter(x->length(x)>2, simplecycles_iter(SimpleDiGraph(g)))
+Graphs.simplecycles_iter(g::Graphs.SimpleGraph) = Iterators.filter(x -> length(x) > 2, simplecycles_iter(SimpleDiGraph(g)))

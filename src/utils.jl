@@ -60,7 +60,6 @@ function complete!(g)
     g
 end
 
-
 function rem_edges!(g, es)
     # x = falses(length(es))
     for (i, e) in enumerate(es)
@@ -77,4 +76,30 @@ function add_edges!(g, es)
         add_edge!(g, e)
     end
     # x
+end
+
+"{{xs__, y}} -> {{xs, z}, {z, y}}"
+function split_vertex_before!(g, v)
+    add_vertex!(g)
+    newv = nv(g)
+    ins = copy(inneighbors(g, v))
+    for n in ins
+        rem_edge!(g, n, v)
+        add_edge!(g, n, newv)
+    end
+    add_edge!(g, newv, v)
+    g
+end
+
+"{{y, xs__}} -> {{y, z}, {z, xs}}"
+function split_vertex_after!(g, v)
+    add_vertex!(g)
+    newv = nv(g)
+    ons = copy(outneighbors(g, v))
+    for n in ons
+        rem_edge!(g, v, n)
+        add_edge!(g, newv, n)
+    end
+    add_edge!(g, v, newv)
+    g
 end
